@@ -1,9 +1,8 @@
-use std::time::{Instant, Duration};
-
+use log::*;
 use wolf_engine::*;
 use wolf_engine_sdl2::*;
-use log::*;
-use sdl2::{pixels::Color, gfx::primitives::DrawRenderer};
+use colors_transform::{Color, Hsl};
+use sdl2::{pixels::Color as SdlColor, gfx::primitives::DrawRenderer};
 
 fn main() {
     logging::initialize_logging(LevelFilter::Debug);    
@@ -14,38 +13,33 @@ fn main() {
 }
 
 pub struct MainState {
-    last_color_change: Instant,
-    color: Color,
+    hew: f32, 
 }
 
 impl MainState {
     pub fn new() -> Self {
         Self {
-            last_color_change: Instant::now(),
-            color: Color::RED,
+            hew: 0.0,
         }
     }
 }
 
 impl State for MainState {
     fn update(&mut self, _context: &mut Context) -> OptionalTransition {
-        if self.last_color_change.elapsed() > Duration::from_secs(1) {
-            if self.color == Color::RED {
-                self.color = Color::BLUE; 
-            } else {
-                self.color = Color::RED;
-            }
-            self.last_color_change = Instant::now();
-        }
+        self.hew = (self.hew + 1.0) % 360.0;
         None
     }
 
     fn render(&mut self, context: &mut Context) -> RenderResult {
         if let Some(Ok(mut sdl_graphics)) = context.try_borrow_mut::<SdlVideoContext>() {
-            sdl_graphics.canvas.set_draw_color(self.color);
+            sdl_graphics.canvas.set_draw_color(convert_hew_to_color(self.hew));
             sdl_graphics.canvas.clear();
-            sdl_graphics.canvas.string(10, 10, "Hello, World!", Color::WHITE).unwrap();
+            sdl_graphics.canvas.string(10, 10, "Hello, World!", SdlColor::WHITE).unwrap();
             sdl_graphics.canvas.present();
         }
     }
+}
+
+pub fn convert_hew_to_color(hew: f32) -> SdlColor {
+    SdlColor::BLUE
 }
