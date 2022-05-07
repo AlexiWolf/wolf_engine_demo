@@ -3,7 +3,7 @@ use std::time::{Instant, Duration};
 use wolf_engine::*;
 use wolf_engine_sdl2::*;
 use log::*;
-use sdl2::pixels::Color;
+use sdl2::{pixels::Color, gfx::primitives::DrawRenderer};
 
 fn main() {
     logging::initialize_logging(LevelFilter::Debug);    
@@ -44,6 +44,7 @@ impl State for MainState {
         if let Some(Ok(mut sdl_graphics)) = context.try_borrow_mut::<SdlVideoContext>() {
             sdl_graphics.canvas.set_draw_color(self.color);
             sdl_graphics.canvas.clear();
+            sdl_graphics.canvas.string(10, 10, "Hello, World!", Color::WHITE).unwrap();
             sdl_graphics.canvas.present();
         }
     }
