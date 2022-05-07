@@ -41,5 +41,10 @@ impl State for MainState {
 }
 
 pub fn convert_hew_to_color(hew: f32) -> SdlColor {
-    SdlColor::BLUE
+    let color = Hsl::from(hew, 100.0, 50.0);
+    SdlColor::RGB(
+        color.get_red() as u8,
+        color.get_green() as u8,
+        color.get_blue() as u8,
+    )
 }
