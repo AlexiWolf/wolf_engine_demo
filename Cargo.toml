@@ -15,3 +15,5 @@ log = "0.4"
 rand = "0.8"
 colors-transform = "0.2"
 
+[features]
+http_profiling = ["wolf_engine/http_profiling"]
